@@ -35,13 +35,13 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "open.h"
+#include "tmperamental.h"
 
 void enforcer ( const char * pathname ) {
     const char * to_check = "/tmp/";
-    int len = strlen(to_check);
+    int len = strlen( to_check );
     char * leading = malloc(sizeof(char) * len);
-    strncpy(leading, pathname, len);
+    strncpy ( leading, pathname, len );
     if ( strcmp(to_check, leading) == 0 ) {
         printf("tmperamental: caught a write to /tmp.\n");
         exit(255);
@@ -49,7 +49,7 @@ void enforcer ( const char * pathname ) {
 }
 
 int open ( const char * pathname, int flags, ... ) {
-    enforcer( pathname );
+    enforcer(pathname);
 
     va_list v;
     va_start(v, flags);
@@ -64,7 +64,7 @@ int open ( const char * pathname, int flags, ... ) {
     }
 }
 
-int mkdir(const char *pathname, mode_t mode) {
+int mkdir ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
     int (*orig_addr)(const char *, mode_t) = dlsym(RTLD_NEXT, "mkdir");
@@ -79,14 +79,14 @@ int creat ( const char *pathname, mode_t mode ) {
 }
 
 FILE * fopen ( const char * path, const char *mode ) {
-    enforcer( path );
+    enforcer(path);
 
     FILE * (*orig_addr)(const char *, const char *) = dlsym(RTLD_NEXT, "fopen");
-    return orig_addr(path, mode);
+    return orig_addr( path, mode );
 }
 
 FILE * freopen ( const char *path, const char *mode, FILE * stream ) {
-    enforcer( path );
+    enforcer(path);
 
     FILE * (*orig_addr)(const char *, const char *, FILE *)
         = dlsym(RTLD_NEXT, "freopen");
