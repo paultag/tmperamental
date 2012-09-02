@@ -28,8 +28,12 @@
 #include <dlfcn.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <malloc.h>
+
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "open.h"
 
@@ -40,6 +44,7 @@ void enforcer ( const char * pathname ) {
     strncpy(leading, pathname, len);
     if ( strcmp(to_check, leading) == 0 ) {
         printf("tmperamental: caught a write to /tmp.\n");
+        exit(255);
     }
 }
 
@@ -57,6 +62,13 @@ int open ( const char * pathname, int flags, ... ) {
         int (*orig_addr)(const char *, int) = dlsym(RTLD_NEXT, "open");
         return orig_addr(pathname, flags);
     }
+}
+
+int mkdir(const char *pathname, mode_t mode) {
+    enforcer( pathname );
+
+    int (*orig_addr)(const char *, mode_t) = dlsym(RTLD_NEXT, "mkdir");
+    return orig_addr(pathname, mode);
 }
 
 int creat ( const char *pathname, mode_t mode ) {

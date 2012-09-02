@@ -30,5 +30,6 @@ int open (const char * pathname, int flags, ...);
 int creat(const char *pathname, mode_t mode);
 FILE *fopen(const char *path, const char *mode);
 FILE *freopen(const char *path, const char *mode, FILE *stream);
+int mkdir(const char *pathname, mode_t mode);
 
 #endif
