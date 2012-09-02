@@ -20,3 +20,5 @@ Things to keep in mind:
 -----------------------
 
 This library is *not* to be linked against, just preloaded.
+
+![](http://static.guim.co.uk/sys-images/Society/Pix/pictures/2010/4/21/1271861774568/Crying-Baby-001.jpg)
