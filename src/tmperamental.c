@@ -34,17 +34,41 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <fcntl.h>
+
+#include <execinfo.h>
 
 #include "tmperamental.h"
 
+static int (*orig_open2)(const char *, int);
+static int (*orig_open3)(const char *, int, mode_t);
+static int (*orig_mkdir)(const char *, mode_t);
+static int (*orig_creat)(const char *, mode_t);
+static FILE * (*orig_fopen)(const char *, const char *);
+static FILE * (*orig_freopen)(const char *, const char *, FILE *);
+
+static void tmperamental_init ( void ) __attribute__((constructor));
+
+static void tmperamental_init ( void ) {
+    orig_open2 = dlsym(RTLD_NEXT, "open");
+    orig_open3 = dlsym(RTLD_NEXT, "open");
+    orig_mkdir = dlsym(RTLD_NEXT, "mkdir");
+    orig_creat = dlsym(RTLD_NEXT, "creat");
+    orig_fopen = dlsym(RTLD_NEXT, "fopen");
+    orig_freopen = dlsym(RTLD_NEXT, "freopen");
+}
+
+#define SIZE (100)
+#define FIRST_FRAME (1)
 void enforcer ( const char * pathname ) {
-    const char * to_check = "/tmp/";
-    int len = strlen( to_check );
-    char * leading = malloc(sizeof(char) * len);
-    strncpy ( leading, pathname, len );
-    if ( strcmp(to_check, leading) == 0 ) {
-        printf("tmperamental: caught a write to /tmp.\n");
-        exit(255);
+    if ( strncmp("/tmp/", pathname, 5) == 0 ) {
+        int nframes;
+        void *buffer[SIZE];
+        fprintf(stderr, "tmperamental: caught a write to /tmp.\n");
+        nframes = backtrace(buffer, SIZE);
+        if(nframes > FIRST_FRAME)
+            backtrace_symbols_fd(buffer+FIRST_FRAME, nframes+FIRST_FRAME, 2);
+        abort();
     }
 }
 
@@ -55,40 +79,32 @@ int open ( const char * pathname, int flags, ... ) {
     va_start(v, flags);
     mode_t mode = va_arg(v, mode_t);
     va_end(v);
-    if ( mode ) {
-        int (*orig_addr)(const char *, int, mode_t) = dlsym(RTLD_NEXT, "open");
-        return orig_addr(pathname, flags, mode);
-    } else {
-        int (*orig_addr)(const char *, int) = dlsym(RTLD_NEXT, "open");
-        return orig_addr(pathname, flags);
-    }
+    if ( mode )
+        return orig_open3(pathname, flags, mode);
+    else
+        return orig_open2(pathname, flags);
 }
 
 int mkdir ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
-    int (*orig_addr)(const char *, mode_t) = dlsym(RTLD_NEXT, "mkdir");
-    return orig_addr(pathname, mode);
+    return orig_mkdir(pathname, mode);
 }
 
 int creat ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
-    int (*orig_addr)(const char *, mode_t) = dlsym(RTLD_NEXT, "creat");
-    return orig_addr(pathname, mode);
+    return orig_creat(pathname, mode);
 }
 
 FILE * fopen ( const char * path, const char *mode ) {
     enforcer(path);
 
-    FILE * (*orig_addr)(const char *, const char *) = dlsym(RTLD_NEXT, "fopen");
-    return orig_addr( path, mode );
+    return orig_fopen( path, mode );
 }
 
 FILE * freopen ( const char *path, const char *mode, FILE * stream ) {
     enforcer(path);
 
-    FILE * (*orig_addr)(const char *, const char *, FILE *)
-        = dlsym(RTLD_NEXT, "freopen");
-    return orig_addr(path, mode, stream);
+    return orig_freopen(path, mode, stream);
 }
