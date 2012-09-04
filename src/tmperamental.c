@@ -37,8 +37,6 @@
 #include <fcntl.h>
 #include <execinfo.h>
 
-#include "tmperamental.h"
-
 static int (*orig_open)(const char *, int, ...);
 static int (*orig_mkdir)(const char *, mode_t);
 static int (*orig_creat)(const char *, mode_t);
