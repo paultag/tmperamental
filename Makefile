@@ -1,22 +1,21 @@
-include version.mk
+prefix		= /usr/local
+libdir		= ${prefix}/lib
+pkglibdir	= ${libdir}/tmperamental
 
-SUBDIRS = src lib
-.PHONY: subdirs $(SUBDIRS)
+LIBS		= out/libtmperamental.so
 
 all: build
-
-lib: src
-
-subdirs: clean $(SUBDIRS)
-$(SUBDIRS):
-	$(MAKE) -C $@ build
-
+build: ${LIBS}
 clean:
-	rm -fv lib/*so*
-	make -C src clean
+	rm -rf out
+install: all
+	install -d ${DESTDIR}/${pkglibdir} ${DESTDIR}/${bindir}
+	install -m 0644 ${LIBS} ${DESTDIR}/${pkglibdir}/
 
-build: subdirs
+.PHONY: all build clean install
 
-install: subdirs
-	mkdir -p $(DESTDIR)/usr/include $(DESTDIR)/usr/lib
-	cp -r lib/*so*  $(DESTDIR)/usr/lib/
+out/libtmperamental.so: out/tmperamental.o
+	${CC} ${LDFLAGS} -shared -Wl,--no-as-needed -ldl -o $@ $<
+out/tmperamental.o: src/tmperamental.c
+	install -d out
+	${CC} ${CFLAGS} -fPIC -DPIC -c -o $@ $<
