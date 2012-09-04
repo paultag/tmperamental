@@ -37,6 +37,24 @@
 
 #include "tmperamental.h"
 
+static int (*orig_open2)(const char *, int);
+static int (*orig_open3)(const char *, int, mode_t);
+static int (*orig_mkdir)(const char *, mode_t);
+static int (*orig_creat)(const char *, mode_t);
+static FILE * (*orig_fopen)(const char *, const char *);
+static FILE * (*orig_freopen)(const char *, const char *, FILE *);
+
+static void tmperamental_init ( void ) __attribute__((constructor));
+
+static void tmperamental_init ( void ) {
+    orig_open2 = dlsym(RTLD_NEXT, "open");
+    orig_open3 = dlsym(RTLD_NEXT, "open");
+    orig_mkdir = dlsym(RTLD_NEXT, "mkdir");
+    orig_creat = dlsym(RTLD_NEXT, "creat");
+    orig_fopen = dlsym(RTLD_NEXT, "fopen");
+    orig_freopen = dlsym(RTLD_NEXT, "freopen");
+}
+
 void enforcer ( const char * pathname ) {
     if ( strncmp("/tmp/", pathname, 5) == 0 ) {
         printf("tmperamental: caught a write to /tmp.\n");
@@ -51,40 +69,32 @@ int open ( const char * pathname, int flags, ... ) {
     va_start(v, flags);
     mode_t mode = va_arg(v, mode_t);
     va_end(v);
-    if ( mode ) {
-        int (*orig_addr)(const char *, int, mode_t) = dlsym(RTLD_NEXT, "open");
-        return orig_addr(pathname, flags, mode);
-    } else {
-        int (*orig_addr)(const char *, int) = dlsym(RTLD_NEXT, "open");
-        return orig_addr(pathname, flags);
-    }
+    if ( mode )
+        return orig_open3(pathname, flags, mode);
+    else
+        return orig_open2(pathname, flags);
 }
 
 int mkdir ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
-    int (*orig_addr)(const char *, mode_t) = dlsym(RTLD_NEXT, "mkdir");
-    return orig_addr(pathname, mode);
+    return orig_mkdir(pathname, mode);
 }
 
 int creat ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
-    int (*orig_addr)(const char *, mode_t) = dlsym(RTLD_NEXT, "creat");
-    return orig_addr(pathname, mode);
+    return orig_creat(pathname, mode);
 }
 
 FILE * fopen ( const char * path, const char *mode ) {
     enforcer(path);
 
-    FILE * (*orig_addr)(const char *, const char *) = dlsym(RTLD_NEXT, "fopen");
-    return orig_addr( path, mode );
+    return orig_fopen( path, mode );
 }
 
 FILE * freopen ( const char *path, const char *mode, FILE * stream ) {
     enforcer(path);
 
-    FILE * (*orig_addr)(const char *, const char *, FILE *)
-        = dlsym(RTLD_NEXT, "freopen");
-    return orig_addr(path, mode, stream);
+    return orig_freopen(path, mode, stream);
 }
