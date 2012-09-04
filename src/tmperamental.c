@@ -38,11 +38,7 @@
 #include "tmperamental.h"
 
 void enforcer ( const char * pathname ) {
-    const char * to_check = "/tmp/";
-    int len = strlen( to_check );
-    char * leading = malloc(sizeof(char) * len);
-    strncpy ( leading, pathname, len );
-    if ( strcmp(to_check, leading) == 0 ) {
+    if ( strncmp("/tmp/", pathname, 5) == 0 ) {
         printf("tmperamental: caught a write to /tmp.\n");
         exit(255);
     }
