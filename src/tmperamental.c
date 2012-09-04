@@ -66,14 +66,11 @@ int open ( const char * pathname, int flags, ... ) {
 
     va_list v;
     va_start(v, flags);
-    if ( flags & O_CREAT )
-    {
+    if ( flags & O_CREAT ) {
         mode_t mode = va_arg(v, mode_t);
         va_end(v);
         return orig_open(pathname, flags, mode);
-    }
-    else
-    {
+    } else {
         va_end(v);
         return orig_open(pathname, flags);
     }
