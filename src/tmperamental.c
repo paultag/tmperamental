@@ -40,7 +40,7 @@
 void enforcer ( const char * pathname ) {
     if ( strncmp("/tmp/", pathname, 5) == 0 ) {
         printf("tmperamental: caught a write to /tmp.\n");
-        exit(255);
+        abort();
     }
 }
 
