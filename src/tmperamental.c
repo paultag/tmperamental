@@ -34,6 +34,9 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <fcntl.h>
+
+#include <execinfo.h>
 
 #include "tmperamental.h"
 
@@ -55,9 +58,16 @@ static void tmperamental_init ( void ) {
     orig_freopen = dlsym(RTLD_NEXT, "freopen");
 }
 
+#define SIZE (100)
+#define FIRST_FRAME (1)
 void enforcer ( const char * pathname ) {
     if ( strncmp("/tmp/", pathname, 5) == 0 ) {
-        printf("tmperamental: caught a write to /tmp.\n");
+        int nframes;
+        void *buffer[SIZE];
+        fprintf(stderr, "tmperamental: caught a write to /tmp.\n");
+        nframes = backtrace(buffer, SIZE);
+        if(nframes > FIRST_FRAME)
+            backtrace_symbols_fd(buffer+FIRST_FRAME, nframes+FIRST_FRAME, 2);
         abort();
     }
 }
