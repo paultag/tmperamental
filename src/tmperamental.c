@@ -34,11 +34,11 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <fcntl.h>
 
 #include "tmperamental.h"
 
-static int (*orig_open2)(const char *, int);
-static int (*orig_open3)(const char *, int, mode_t);
+static int (*orig_open)(const char *, int, ...);
 static int (*orig_mkdir)(const char *, mode_t);
 static int (*orig_creat)(const char *, mode_t);
 static FILE * (*orig_fopen)(const char *, const char *);
@@ -47,8 +47,7 @@ static FILE * (*orig_freopen)(const char *, const char *, FILE *);
 static void tmperamental_init ( void ) __attribute__((constructor));
 
 static void tmperamental_init ( void ) {
-    orig_open2 = dlsym(RTLD_NEXT, "open");
-    orig_open3 = dlsym(RTLD_NEXT, "open");
+    orig_open = dlsym(RTLD_NEXT, "open");
     orig_mkdir = dlsym(RTLD_NEXT, "mkdir");
     orig_creat = dlsym(RTLD_NEXT, "creat");
     orig_fopen = dlsym(RTLD_NEXT, "fopen");
@@ -67,12 +66,17 @@ int open ( const char * pathname, int flags, ... ) {
 
     va_list v;
     va_start(v, flags);
-    mode_t mode = va_arg(v, mode_t);
-    va_end(v);
-    if ( mode )
-        return orig_open3(pathname, flags, mode);
+    if ( flags & O_CREAT )
+    {
+        mode_t mode = va_arg(v, mode_t);
+        va_end(v);
+        return orig_open(pathname, flags, mode);
+    }
     else
-        return orig_open2(pathname, flags);
+    {
+        va_end(v);
+        return orig_open(pathname, flags);
+    }
 }
 
 int mkdir ( const char *pathname, mode_t mode ) {
