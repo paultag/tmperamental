@@ -9,7 +9,7 @@ PROGRAMS	= out/tmperamental
 all: build
 build: ${LIBS} ${PROGRAMS}
 clean:
-	rm -rf out
+	rm -rf out tests/out
 install: all
 	install -d ${DESTDIR}/${pkglibdir} ${DESTDIR}/${bindir}
 	install -m 0644 ${LIBS} ${DESTDIR}/${pkglibdir}/
