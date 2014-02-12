@@ -25,6 +25,9 @@
  * the fuck this came from. This breaks in Cygwin. Not that that really
  * matters in this small case. */
 
+#undef _LARGEFILE64_SOURCE
+#undef _FILE_OFFSET_BITS
+
 #include <dlfcn.h>
 #include <string.h>
 #include <stdio.h>
@@ -38,19 +41,27 @@
 #include <execinfo.h>
 
 static int (*orig_open)(const char *, int, ...);
+static int (*orig_open64)(const char *, int, ...);
 static int (*orig_mkdir)(const char *, mode_t);
 static int (*orig_creat)(const char *, mode_t);
+static int (*orig_creat64)(const char *, mode_t);
 static FILE * (*orig_fopen)(const char *, const char *);
+static FILE * (*orig_fopen64)(const char *, const char *);
 static FILE * (*orig_freopen)(const char *, const char *, FILE *);
+static FILE * (*orig_freopen64)(const char *, const char *, FILE *);
 
 static void tmperamental_init ( void ) __attribute__((constructor));
 
 static void tmperamental_init ( void ) {
     orig_open = dlsym(RTLD_NEXT, "open");
+    orig_open64 = dlsym(RTLD_NEXT, "open64");
     orig_mkdir = dlsym(RTLD_NEXT, "mkdir");
     orig_creat = dlsym(RTLD_NEXT, "creat");
+    orig_creat64 = dlsym(RTLD_NEXT, "creat64");
     orig_fopen = dlsym(RTLD_NEXT, "fopen");
+    orig_fopen64 = dlsym(RTLD_NEXT, "fopen64");
     orig_freopen = dlsym(RTLD_NEXT, "freopen");
+    orig_freopen64 = dlsym(RTLD_NEXT, "freopen64");
 }
 
 #define SIZE (100)
@@ -82,6 +93,21 @@ int open ( const char * pathname, int flags, ... ) {
     }
 }
 
+int open64 ( const char * pathname, int flags, ... ) {
+    enforcer(pathname);
+
+    va_list v;
+    va_start(v, flags);
+    if ( flags & O_CREAT ) {
+        mode_t mode = va_arg(v, mode_t);
+        va_end(v);
+        return orig_open64(pathname, flags, mode);
+    } else {
+        va_end(v);
+        return orig_open64(pathname, flags);
+    }
+}
+
 int mkdir ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
@@ -94,14 +120,32 @@ int creat ( const char *pathname, mode_t mode ) {
     return orig_creat(pathname, mode);
 }
 
+int creat64 ( const char *pathname, mode_t mode ) {
+    enforcer( pathname );
+
+    return orig_creat64(pathname, mode);
+}
+
 FILE * fopen ( const char * path, const char *mode ) {
     enforcer(path);
 
     return orig_fopen( path, mode );
 }
 
+FILE * fopen64 ( const char * path, const char *mode ) {
+    enforcer(path);
+
+    return orig_fopen64( path, mode );
+}
+
 FILE * freopen ( const char *path, const char *mode, FILE * stream ) {
     enforcer(path);
 
     return orig_freopen(path, mode, stream);
+}
+
+FILE * freopen64 ( const char *path, const char *mode, FILE * stream ) {
+    enforcer(path);
+
+    return orig_freopen64(path, mode, stream);
 }
