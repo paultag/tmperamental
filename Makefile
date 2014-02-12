@@ -1,4 +1,4 @@
-prefix		= /usr/local
+prefix		= /usr/
 libdir		= ${prefix}/lib
 pkglibdir	= ${libdir}/tmperamental
 bindir		= ${prefix}/bin
