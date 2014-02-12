@@ -21,7 +21,7 @@ out/libtmperamental.so: out/tmperamental.o
 	${CC} ${LDFLAGS} -shared -Wl,--no-as-needed -ldl -o $@ $<
 out/tmperamental.o: src/tmperamental.c
 	install -d out
-	${CC} ${CFLAGS} -fPIC -DPIC -c -o $@ $<
+	${CC} ${CFLAGS} ${CPPFLAGS} -Wall -fPIC -DPIC -c -o $@ $<
 out/tmperamental: src/tmperamental.in
 	sed -e "s,@pkglibdir@,${pkglibdir},g" <$^ >$@
 	chmod +x $@
