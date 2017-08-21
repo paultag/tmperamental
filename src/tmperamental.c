@@ -21,9 +21,8 @@
  */
 
 #define _GNU_SOURCE 1
-/* This horseshit hack brought to you by the fine folks over at wherever
- * the fuck this came from. This breaks in Cygwin. Not that that really
- * matters in this small case. */
+/* On glibc systems, this is needed for RTLD_NEXT to be defined.
+ * This breaks in Cygwin. Not that that really matters in this small case. */
 
 #undef _LARGEFILE64_SOURCE
 #undef _FILE_OFFSET_BITS
