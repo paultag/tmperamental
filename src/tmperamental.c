@@ -76,13 +76,15 @@ void enforcer ( const char * pathname ) {
     }
 }
 
+#define mode_t_or_int typeof(+(mode_t)0)
+
 int open ( const char * pathname, int flags, ... ) {
     enforcer(pathname);
 
     va_list v;
     va_start(v, flags);
     if ( flags & O_CREAT ) {
-        mode_t mode = va_arg(v, mode_t);
+        mode_t mode = va_arg(v, mode_t_or_int);
         va_end(v);
         return orig_open(pathname, flags, mode);
     } else {
@@ -97,7 +99,7 @@ int open64 ( const char * pathname, int flags, ... ) {
     va_list v;
     va_start(v, flags);
     if ( flags & O_CREAT ) {
-        mode_t mode = va_arg(v, mode_t);
+        mode_t mode = va_arg(v, mode_t_or_int);
         va_end(v);
         return orig_open64(pathname, flags, mode);
     } else {
