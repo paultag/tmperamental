@@ -1,3 +1,39 @@
+tmperamental (1.1) unstable; urgency=medium
+
+  [ Jakub Wilk ]
+  * Compile with -Wall.
+  * Honour CPPFLAGS.
+  * Add support for LFS (open64, creat64, etc.) API.
+  * Add the test suite.
+
+  [ Paul Tagliamonte ]
+  * Add tests/out to clean
+
+  [ Justin B Rye ]
+  * Typofix. (Closes: #738858)
+
+  [ Jakub Wilk ]
+  * Explain why _GNU_SOURCE needs to be defined
+  * Link with -ldl only of GNU systems
+  * Don't include malloc.h
+  * Fix type mismatch when sizeof (mode_t) < sizeof (int)
+  * Don't split arguments containing spaces (Closes: #862165)
+
+  [ Daniel Kahn Gillmor ]
+  * wrap-and-sort -ast
+  * move to dh 11
+  * Standards-Version: bump to 4.2.1 (no changes needed)
+  * move source repositories to salsa.debian.org
+  * d/copyright: use secure address of Format
+  * Add myself to uploaders
+  * de-slangify the package Description
+  * added debian/gbp.conf
+  * no need for a trailing slash after ${prefix}
+  * enable parallel build
+  * New release (Closes: #901196)
+
+ -- Daniel Kahn Gillmor <dkg@fifthhorseman.net>  Mon, 27 Aug 2018 21:55:23 -0400
+
 tmperamental (1.0) unstable; urgency=low
 
   * Initial release.
