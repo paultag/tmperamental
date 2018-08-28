@@ -2,7 +2,8 @@ Source: tmperamental
 Section: misc
 Priority: optional
 Maintainer: Paul Tagliamonte <paultag@debian.org>
-Build-Depends: debhelper (>= 9)
+Build-Depends:
+ debhelper (>= 9),
 Standards-Version: 3.9.5
 Homepage: http://git.debian.org/?p=collab-maint/tmperamental.git;a=summary
 Vcs-Git: git://git.debian.org/collab-maint/tmperamental.git
@@ -10,7 +11,9 @@ Vcs-Browser: http://git.debian.org/?p=collab-maint/tmperamental.git
 
 Package: tmperamental
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
 Description: LD_PRELOADable library to detect rogue writes to /tmp/
  This friendly library will explode in a huge ball of fire when an application
  tries to write to /tmp, which is hella useful for checking that code respects
