@@ -1,7 +1,7 @@
 prefix		= /usr/
-libdir		= ${prefix}/lib
+libdir		= ${prefix}lib
 pkglibdir	= ${libdir}/tmperamental
-bindir		= ${prefix}/bin
+bindir		= ${prefix}bin
 
 LIBS		= out/libtmperamental.so
 PROGRAMS	= out/tmperamental
