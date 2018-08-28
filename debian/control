@@ -2,6 +2,8 @@ Source: tmperamental
 Section: misc
 Priority: optional
 Maintainer: Paul Tagliamonte <paultag@debian.org>
+Uploaders:
+ Daniel Kahn Gillmor <dkg@fifthhorseman.net>,
 Build-Depends:
  debhelper (>= 11),
 Standards-Version: 4.2.1
