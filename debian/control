@@ -3,7 +3,7 @@ Section: misc
 Priority: optional
 Maintainer: Paul Tagliamonte <paultag@debian.org>
 Build-Depends:
- debhelper (>= 9),
+ debhelper (>= 11),
 Standards-Version: 3.9.5
 Homepage: http://git.debian.org/?p=collab-maint/tmperamental.git;a=summary
 Vcs-Git: git://git.debian.org/collab-maint/tmperamental.git
