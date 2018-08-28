@@ -21,11 +21,12 @@ install: all
 
 .PHONY: all build clean install
 
-out/libtmperamental.so: out/tmperamental.o
-	${CC} ${LDFLAGS} -shared -Wl,--no-as-needed ${LDLIBS} -o $@ $<
-out/tmperamental.o: src/tmperamental.c
+out:
 	install -d out
+out/libtmperamental.so: out/tmperamental.o out
+	${CC} ${LDFLAGS} -shared -Wl,--no-as-needed ${LDLIBS} -o $@ $<
+out/tmperamental.o: src/tmperamental.c out
 	${CC} ${CFLAGS} ${CPPFLAGS} -Wall -fPIC -DPIC -c -o $@ $<
-out/tmperamental: src/tmperamental.in
-	sed -e "s,@pkglibdir@,${pkglibdir},g" <$^ >$@
+out/tmperamental: src/tmperamental.in out
+	sed -e "s,@pkglibdir@,${pkglibdir},g" <$< >$@
 	chmod +x $@
