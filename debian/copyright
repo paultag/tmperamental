@@ -1,10 +1,11 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0
 Upstream-Name: tmperamental
 Upstream-Contact: Paul R. Tagliamonte <paultag@debian.org>
-Source: http://git.debian.org/?p=collab-maint/tmperamental.git;a=summary
+Source: https://salsa.debian.org/debian/tmperamental.git
 
 Files: *
-Copyright: 2010-2012, Paul Tagliamonte <paultag@ubuntu.com>
+Copyright: 2010-2012, Paul Tagliamonte <paultag@ubuntu.com>,
+ 2018 Daniel Kahn Gillmor <dkg@fifthhorseman.net>
 License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a
  copy of this software and associated documentation files (the "Software"),
