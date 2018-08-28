@@ -17,6 +17,6 @@ Depends:
  ${misc:Depends},
  ${shlibs:Depends},
 Description: LD_PRELOADable library to detect rogue writes to /tmp/
- This friendly library will explode in a huge ball of fire when an application
- tries to write to /tmp, which is hella useful for checking that code respects
- setting TMPDIR (and friends) in the env.
+ This friendly library will print a backtrace and abort fire when an
+ application tries to write to /tmp.  This is useful for checking that
+ code respects setting TMPDIR (and friends) in the env.
