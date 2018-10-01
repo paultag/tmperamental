@@ -1,4 +1,4 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: tmperamental
 Upstream-Contact: Paul R. Tagliamonte <paultag@debian.org>
 Source: https://salsa.debian.org/debian/tmperamental.git
