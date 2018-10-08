@@ -6,6 +6,10 @@ bindir		= ${prefix}/bin
 LIBS		= out/libtmperamental.so
 PROGRAMS	= out/tmperamental
 
+ifneq "$(filter Linux GNU%,$(shell uname))" ""
+LDLIBS         += -ldl
+endif
+
 all: build
 build: ${LIBS} ${PROGRAMS}
 clean:
@@ -18,7 +22,7 @@ install: all
 .PHONY: all build clean install
 
 out/libtmperamental.so: out/tmperamental.o
-	${CC} ${LDFLAGS} -shared -Wl,--no-as-needed -ldl -o $@ $<
+	${CC} ${LDFLAGS} -shared -Wl,--no-as-needed ${LDLIBS} -o $@ $<
 out/tmperamental.o: src/tmperamental.c
 	install -d out
 	${CC} ${CFLAGS} ${CPPFLAGS} -Wall -fPIC -DPIC -c -o $@ $<
