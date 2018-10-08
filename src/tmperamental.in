@@ -4,4 +4,4 @@ TMPDIR=${TMPDIR:-$HOME/tmp}
 export TMPDIR
 LD_PRELOAD="${LD_PRELOAD} @pkglibdir@/libtmperamental.so"
 export LD_PRELOAD
-exec $@
+exec "$@"
