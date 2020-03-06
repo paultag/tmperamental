@@ -50,6 +50,8 @@ static FILE * (*orig_freopen64)(const char *, const char *, FILE *);
 
 static void tmperamental_init ( void ) __attribute__((constructor));
 
+#define iflive(x, ...) if (orig_ ## x )
+
 static void tmperamental_init ( void ) {
     orig_open = dlsym(RTLD_NEXT, "open");
     orig_open64 = dlsym(RTLD_NEXT, "open64");
@@ -61,6 +63,8 @@ static void tmperamental_init ( void ) {
     orig_freopen = dlsym(RTLD_NEXT, "freopen");
     orig_freopen64 = dlsym(RTLD_NEXT, "freopen64");
 }
+
+#define fixup(x) if (!orig_ ## x) orig_ ## x = dlsym(RTLD_NEXT, #x)
 
 #define SIZE (100)
 #define FIRST_FRAME (1)
@@ -83,6 +87,7 @@ int open ( const char * pathname, int flags, ... ) {
 
     va_list v;
     va_start(v, flags);
+    fixup(open);
     if ( flags & O_CREAT ) {
         mode_t mode = va_arg(v, mode_t_or_int);
         va_end(v);
@@ -98,6 +103,7 @@ int open64 ( const char * pathname, int flags, ... ) {
 
     va_list v;
     va_start(v, flags);
+    fixup(open64);
     if ( flags & O_CREAT ) {
         mode_t mode = va_arg(v, mode_t_or_int);
         va_end(v);
@@ -111,41 +117,48 @@ int open64 ( const char * pathname, int flags, ... ) {
 int mkdir ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
+    fixup(mkdir);
     return orig_mkdir(pathname, mode);
 }
 
 int creat ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
+    fixup(creat);
     return orig_creat(pathname, mode);
 }
 
 int creat64 ( const char *pathname, mode_t mode ) {
     enforcer( pathname );
 
+    fixup(creat64);
     return orig_creat64(pathname, mode);
 }
 
 FILE * fopen ( const char * path, const char *mode ) {
     enforcer(path);
 
+    fixup(fopen);
     return orig_fopen( path, mode );
 }
 
 FILE * fopen64 ( const char * path, const char *mode ) {
     enforcer(path);
 
+    fixup(fopen64);
     return orig_fopen64( path, mode );
 }
 
 FILE * freopen ( const char *path, const char *mode, FILE * stream ) {
     enforcer(path);
 
+    fixup(freopen);
     return orig_freopen(path, mode, stream);
 }
 
 FILE * freopen64 ( const char *path, const char *mode, FILE * stream ) {
     enforcer(path);
 
+    fixup(freopen64);
     return orig_freopen64(path, mode, stream);
 }
