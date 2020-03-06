@@ -11,7 +11,7 @@ env-vars.
 Basic Usage:
 ------------
 
-    TMPDIR=~/.tmp LD_PRELOAD=/usr/lib/libtmperamental.so app arguments
+    TMPDIR=~/.tmp LD_PRELOAD=/usr/lib/tmperamental/libtmperamental.so app arguments
 
 In the event the app causes problems, you should see some stderr and a
 nonzero exit status.
