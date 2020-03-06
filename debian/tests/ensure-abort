@@ -1,0 +1,22 @@
+#!/bin/sh
+
+target=tmperamental-test.$$
+
+printf 'Trying to block write to /tmp/%s\n' "$target"
+
+if stat "/tmp/$target" 2>&1; then
+    printf >&2 '/tmp/%s appears to exist already\n' "$target"
+    exit 1
+fi
+
+if tmperamental touch "/tmp/$target" 2>&1; then
+    printf >&2 'Failed to prevent a write to /tmp/%s\n' "$target"
+    exit 1
+fi
+
+if stat "/tmp/$target" 2>&1; then
+    printf >&2 '/tmp/%s appears to exist after being touched\n' "$target"
+    exit 1
+fi
+
+printf 'Successfully blocked write to /tmp/%s\n' "$target"
