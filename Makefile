@@ -2,6 +2,7 @@ prefix		= /usr/
 libdir		= ${prefix}lib
 pkglibdir	= ${libdir}/tmperamental
 bindir		= ${prefix}bin
+mandir          = ${prefix}share/man
 
 LIBS		= out/libtmperamental.so
 PROGRAMS	= out/tmperamental
@@ -18,6 +19,8 @@ install: all
 	install -d ${DESTDIR}/${pkglibdir} ${DESTDIR}/${bindir}
 	install -m 0644 ${LIBS} ${DESTDIR}/${pkglibdir}/
 	install -m 0755 ${PROGRAMS} ${DESTDIR}/${bindir}/
+	install -d ${DESTDIR}/${pkglibdir} ${DESTDIR}/${mandir}/man1
+	install -m 0644 doc/tmperamental.1 ${DESTDIR}/${mandir}/man1/
 
 .PHONY: all build clean install
 
