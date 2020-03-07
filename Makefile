@@ -21,8 +21,10 @@ install: all
 	install -m 0755 ${PROGRAMS} ${DESTDIR}/${bindir}/
 	install -d ${DESTDIR}/${pkglibdir} ${DESTDIR}/${mandir}/man1
 	install -m 0644 doc/tmperamental.1 ${DESTDIR}/${mandir}/man1/
+check: build
+	$(MAKE) -C tests
 
-.PHONY: all build clean install
+.PHONY: all build clean install check
 
 out:
 	install -d out
