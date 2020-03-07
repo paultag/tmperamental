@@ -1,7 +1,7 @@
-Test-Command: /usr/bin/tmperamental ls /
+Test-Command: tmperamental ls /
 Features: test-name=ls-root
 
-Test-Command: /usr/bin/tmperamental ls /nonexistent
+Test-Command: ! tmperamental ls /nonexistent
 Features: test-name=ls-nonexistent
 Restrictions: allow-stderr
 
