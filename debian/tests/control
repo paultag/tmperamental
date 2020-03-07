@@ -5,5 +5,12 @@ Test-Command: ! tmperamental ls /nonexistent
 Features: test-name=ls-nonexistent
 Restrictions: allow-stderr
 
-Tests: ensure-abort
+Test-Command: make -C tests preload=LD_PRELOAD=/usr/lib/tmperamental/libtmperamental.so
+Features: test-name=build-test
+Depends:
+ gcc,
+ make,
+ @,
+Restrictions: allow-stderr
 
+Tests: ensure-abort
