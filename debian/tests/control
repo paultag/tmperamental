@@ -9,6 +9,7 @@ Test-Command: make -C tests preload=LD_PRELOAD=/usr/lib/tmperamental/libtmperame
 Features: test-name=build-test
 Depends:
  gcc,
+ libc6-dev,
  make,
  @,
 Restrictions: allow-stderr
