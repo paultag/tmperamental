@@ -1,0 +1,50 @@
+.TH TMPERAMENTAL "1" "March 2020" "tmperamental 1.2" "User Commands"
+.SH NAME
+tmperamental \- avoid writing to /tmp
+.SH SYNOPSIS
+
+.B tmperamental cmd arg1 arg2 ...
+
+.SH DESCRIPTION
+
+.B tmperamental
+uses a preloaded library that intercepts filesystem writes, and causes
+loud failures when writes are attempted on
+.B /tmp/*
+
+The idea here is by setting TMPDIR and friends, it catches programs in
+the act of not respecting such env-vars.
+
+.SH USAGE
+
+Prefix the command you want to run with
+.B tmperamental
+and it should cause it to abort if it ever tries to write anywhere within
+.BR /tmp .
+This is pretty brutal, so you probably only want to use it for testing.
+
+.SH ENVIRONMENT
+
+If
+.B TMPDIR
+is unset,
+.B tmperamental
+will set it automatically to
+.BR $HOME/tmp .
+
+.B tmperamental
+uses
+.B LD_PRELOAD
+to load a custom library
+.B libtmperamental.so
+that intercepts library calls.
+
+.SH LIMITATIONS
+
+.B tmperamental
+only catches writes to
+.B /tmp
+at shared object library calls using the standard libc interface.  A
+statically-compiled program that makes system calls directly will be able to write to
+.B /tmp
+without being intercepted.

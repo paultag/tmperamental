@@ -1,7 +1,8 @@
 prefix		= /usr/
-libdir		= ${prefix}/lib
+libdir		= ${prefix}lib
 pkglibdir	= ${libdir}/tmperamental
-bindir		= ${prefix}/bin
+bindir		= ${prefix}bin
+mandir          = ${prefix}share/man
 
 LIBS		= out/libtmperamental.so
 PROGRAMS	= out/tmperamental
@@ -18,14 +19,19 @@ install: all
 	install -d ${DESTDIR}/${pkglibdir} ${DESTDIR}/${bindir}
 	install -m 0644 ${LIBS} ${DESTDIR}/${pkglibdir}/
 	install -m 0755 ${PROGRAMS} ${DESTDIR}/${bindir}/
+	install -d ${DESTDIR}/${pkglibdir} ${DESTDIR}/${mandir}/man1
+	install -m 0644 doc/tmperamental.1 ${DESTDIR}/${mandir}/man1/
+check: build
+	$(MAKE) -C tests
 
-.PHONY: all build clean install
+.PHONY: all build clean install check
 
-out/libtmperamental.so: out/tmperamental.o
-	${CC} ${LDFLAGS} -shared -Wl,--no-as-needed ${LDLIBS} -o $@ $<
-out/tmperamental.o: src/tmperamental.c
+out:
 	install -d out
+out/libtmperamental.so: out/tmperamental.o out
+	${CC} ${LDFLAGS} -shared -Wl,--no-as-needed ${LDLIBS} -o $@ $<
+out/tmperamental.o: src/tmperamental.c out
 	${CC} ${CFLAGS} ${CPPFLAGS} -Wall -fPIC -DPIC -c -o $@ $<
-out/tmperamental: src/tmperamental.in
-	sed -e "s,@pkglibdir@,${pkglibdir},g" <$^ >$@
+out/tmperamental: src/tmperamental.in out
+	sed -e "s,@pkglibdir@,${pkglibdir},g" <$< >$@
 	chmod +x $@

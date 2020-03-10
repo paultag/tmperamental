@@ -1,3 +1,72 @@
+tmperamental (1.4) unstable; urgency=medium
+
+  * build-test should depend on libc6-dev
+
+ -- Daniel Kahn Gillmor <dkg@fifthhorseman.net>  Sun, 08 Mar 2020 12:17:06 -0400
+
+tmperamental (1.3) unstable; urgency=medium
+
+  * clean up autopkgtests (ls-nonexistent should return 2, not 0)
+  * added "make check"
+  * run the upstream tests at autopkgtest time as well
+
+ -- Daniel Kahn Gillmor <dkg@fifthhorseman.net>  Sat, 07 Mar 2020 01:29:05 -0500
+
+tmperamental (1.2) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/copyright: Change Format URL to correct one
+
+  [ Daniel Kahn Gillmor ]
+  * Bump debhelper from old 11 to 12.
+  * Set debhelper-compat version in Build-Depends.
+  * standards-version: bump to 4.5.0 (no changes needed)
+  * Rules-Requires-Root: no
+  * add hardening options
+  * the library is not typically placed directly in /usr/lib
+  * Avoid segfaults on earlier initializers (Closes: #941407)
+  * added manpage for tmperamental (Closes: #784978)
+  * drop unnecessary "fire" from package description (Closes: #909201)
+  * added simple autopkgtest
+
+ -- Daniel Kahn Gillmor <dkg@fifthhorseman.net>  Fri, 06 Mar 2020 17:01:33 -0500
+
+tmperamental (1.1) unstable; urgency=medium
+
+  [ Jakub Wilk ]
+  * Compile with -Wall.
+  * Honour CPPFLAGS.
+  * Add support for LFS (open64, creat64, etc.) API.
+  * Add the test suite.
+
+  [ Paul Tagliamonte ]
+  * Add tests/out to clean
+
+  [ Justin B Rye ]
+  * Typofix. (Closes: #738858)
+
+  [ Jakub Wilk ]
+  * Explain why _GNU_SOURCE needs to be defined
+  * Link with -ldl only of GNU systems
+  * Don't include malloc.h
+  * Fix type mismatch when sizeof (mode_t) < sizeof (int)
+  * Don't split arguments containing spaces (Closes: #862165)
+
+  [ Daniel Kahn Gillmor ]
+  * wrap-and-sort -ast
+  * move to dh 11
+  * Standards-Version: bump to 4.2.1 (no changes needed)
+  * move source repositories to salsa.debian.org
+  * d/copyright: use secure address of Format
+  * Add myself to uploaders
+  * de-slangify the package Description
+  * added debian/gbp.conf
+  * no need for a trailing slash after ${prefix}
+  * enable parallel build
+  * New release (Closes: #901196)
+
+ -- Daniel Kahn Gillmor <dkg@fifthhorseman.net>  Mon, 27 Aug 2018 21:55:23 -0400
+
 tmperamental (1.0) unstable; urgency=low
 
   * Initial release.

@@ -1,0 +1,17 @@
+Test-Command: tmperamental ls /
+Features: test-name=ls-root
+
+Test-Command: ! tmperamental ls /nonexistent
+Features: test-name=ls-nonexistent
+Restrictions: allow-stderr
+
+Test-Command: make -C tests preload=LD_PRELOAD=/usr/lib/tmperamental/libtmperamental.so
+Features: test-name=build-test
+Depends:
+ gcc,
+ libc6-dev,
+ make,
+ @,
+Restrictions: allow-stderr
+
+Tests: ensure-abort
